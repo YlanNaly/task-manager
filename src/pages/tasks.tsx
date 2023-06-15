@@ -1,5 +1,6 @@
-import React, { ChangeEvent, use, useRef, useState } from 'react';
+import React, { ChangeEvent, use, useEffect, useRef, useState } from 'react';
 import { useTaskManager } from '@/store/useTaskManager';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 interface Task {
   id: number,
   text: string,
@@ -16,12 +17,15 @@ const TaskManager = () => {
    } = useTaskManager();
 
   const handleAddTask = () => {
-    const title = ""; // Replace with the value in the createTaskRef 
+    const title = "nouveau" ; // Replace with the value in the createTaskRef 
     const newTask = {
       id: Date.now(),
       title,
       completed: false,
     };
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const {setValue} = useLocalStorage("task", newTask)
+    setValue(newTask)
     addTasks(newTask)
   };
 
@@ -37,6 +41,13 @@ const TaskManager = () => {
     return searchTasks(e.currentTarget.value)
   };
 
+  useEffect(() => {
+    const storedItem = localStorage.getItem('task');
+
+    if (storedItem) {
+      addTasks(storedItem)
+    }
+  }, [addTasks]);
   return (
     <div>
       <h1>Task Manager</h1>

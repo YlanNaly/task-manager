@@ -6,6 +6,10 @@ const useLocalStorage = (key:any , value :any) => {
     parsedValue = newValue;
     localStorage.setItem(key, JSON.stringify(newValue));
   };
+  return {
+    value: parsedValue,
+    setValue: setValue
+  };
 }
 
 export {
